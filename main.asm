@@ -1,4 +1,3 @@
-
 ;
 ; Menejo de display;
 ; Created: 29/9/2021 19:12:24
@@ -84,60 +83,25 @@ apagar:		; apaga todo el display de 7 segmentos
 
 main:
 	CALL change1
-	LDI r17, 0b00010000
+	LDI r17, 0b10000000
 	CALL sacanum
 	CALL change2
-	LDI r17, 0b00100000
-	CALL sacanum
-	CALL change3
 	LDI r17, 0b01000000
 	CALL sacanum
+	CALL change3
+	LDI r17, 0b00100000
+	CALL sacanum
 	CALL change4
-	LDI r17, 0b10000000
+	LDI r17, 0b00010000
 	CALL sacanum
 	RJMP main
 
-change1: ;segundos D1
-	CPI r27, 0
-	BREQ num_0
-	CPI r27, 1
-	BREQ num_1
-	CPI r27, 2
-	BREQ num_2
-	CPI r27, 3
-	BREQ num_3
-	CPI r27, 4
-	BREQ num_4
-	CPI r27, 5
-	BREQ num_5
-	CPI r27, 6
-	BREQ num_6
-	CPI r27, 7
-	BREQ num_7
-	CPI r27, 8
-	BREQ num_8
-	CPI r27, 9
-	BREQ num_9
-	LDI r27, 0x00
-	INC r28
-
+change1:
+	CALL num_0
 	RET	
 
-change2: ;segundos D2
-	CPI r28, 0
-	BREQ num_0
-	CPI r28, 1
-	BREQ num_1
-	CPI r28, 2
-	BREQ num_2
-	CPI r28, 3
-	BREQ num_3
-	CPI r28, 4
-	BREQ num_4
-	CPI r28, 5
-	BREQ num_5
-	LDI r28, 0x00
-	INC r29
+change2: 
+	CALL num_1
 	RET	
 
 num_0:
@@ -171,47 +135,12 @@ num_9:
 	LDI r16, 0b00001001
 	RET
 
-change3: ;minutos D3
-	CPI r29, 0
-	BREQ num_0
-	CPI r29, 1
-	BREQ num_1
-	CPI r29, 2
-	BREQ num_2
-	CPI r29, 3
-	BREQ num_3
-	CPI r29, 4
-	BREQ num_4
-	CPI r29, 5
-	BREQ num_5
-	CPI r29, 6
-	BREQ num_6
-	CPI r29, 7
-	BREQ num_7
-	CPI r29, 8
-	BREQ num_8
-	CPI r29, 9
-	BREQ num_9
-	LDI r29, 0x00
-	INC r30
-
+change3: 
+	CALL num_2
 	RET	
 
-change4: ;minutos D4
-	CPI r30, 0
-	BREQ num_0
-	CPI r30, 1
-	BREQ num_1
-	CPI r30, 2
-	BREQ num_2
-	CPI r30, 3
-	BREQ num_3
-	CPI r30, 4
-	BREQ num_4
-	CPI r30, 5
-	BREQ num_5
-	LDI r30, 0x00
-
+change4: 
+	CALL num_3
 	RET	
 
 ;-------------------------------------------------------------------------------------

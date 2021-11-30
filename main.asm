@@ -1,12 +1,16 @@
-
 ;
 ; Menejo de display;
 ; Created: 29/9/2021 19:12:24
 ; Author: Microprocesadores
 ; En este programa vamos a poner el número 0 en dígito display de más a la derecha
 
+.ORG 0x0000
+	jmp		start		;direcci�n de comienzo (vector de reset)  
+.ORG 0x0008
+	jmp		_btn_int		;direccion para la interrupcion externa PCINT1 (Pin change interrupt request 1)
 .ORG 0x001C 
 	jmp		_tmr0_int	;salto atención a rutina de comparación A del timer 0
+
 
 ; acá empieza el programa
 start:
@@ -38,6 +42,12 @@ start:
 	ldi		r16,	0b00000010	
 	sts		TIMSK0,	r16			;habilito la interrupción (falta habilitar global)
 
+;-------------------------------------------------------------------------------------
+;Configuro el btn y su interrupcion.
+	LDI r16, 0b00000010
+	STS PCICR, r16 ;habilito el PCINT1
+	LDI r16, 0b00001110 
+	STS PCMSK1, r16 ;habilito la interrupcion correspondiente a los botones 9, 10, 11
 ;-------------------------------------------------------------------------------------
 
 ;-------------------------------------------------------------------------------------
@@ -255,3 +265,32 @@ _tmr0_int:
 		LDI r24, 0x00
 		INC r27
 		JMP _tmr0_out
+
+_btn_int:
+		IN r31, SREG	;guarda el estado de los flags previo a la interrupcion		
+		SBIS PINC, 1	; boton A1
+		RJMP _btn_A1		; reanuda la interrupcion
+		SBIS PINC, 2	; boton A2
+		RJMP _btn_A2		; pausa la interrupcion
+		SBIS PINC, 3	; boton A3
+		RJMP _btn_A3		; limpia los registros
+		RJMP _tmr0_out
+
+_btn_A1: ; habilita nuevamente la interrupcion del timer
+		LDI	r16, 0b00000101
+		OUT	TCCR0B,	r16 
+		RJMP _tmr0_out
+
+_btn_A2: ; deshabilita la interrupcion del timer
+		LDI	r16,0b00000000		
+		OUT	TCCR0B,	r16 
+		RJMP _tmr0_out
+
+_btn_A3: ; resetea el contador
+		LDI	r16, 0b000000101		
+		OUT	TCCR0B,	r16 
+		LDI	r27, 0x00
+		LDI	r28, 0x00
+		LDI	r29, 0x00
+		LDI	r30, 0x00
+		RJMP _tmr0_out
